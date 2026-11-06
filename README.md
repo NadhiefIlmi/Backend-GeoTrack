@@ -2,6 +2,8 @@
 
 GeoTrack Backend adalah REST API berkinerja tinggi yang dirancang untuk mengelola entitas geospasial (*Vehicles, IoT Devices, Facilities, Infrastructure*) secara terpusat. Dibangun menggunakan bahasa **Golang** dengan menerapkan prinsip **Clean Architecture** (decoupling ketat antara domain bisnis, database, dan delivery layer).
 
+> 🔗 **Repositori Terkait:** Antarmuka web pengguna (*frontend*) untuk sistem ini tersedia di [**Frontend-GeoTrack (TanStack Start & React 19)**](https://github.com/NadhiefIlmi/Frontend-GeoTrack).
+
 ---
 
 ## 🚀 Fitur Utama
@@ -258,4 +260,13 @@ Semua endpoint API disajikan dengan basis path `/api/v1`:
 | **Activities** | `GET` | `/api/v1/activities/{id}` | Rincian rekaman aktivitas |
 | **Dashboard** | `GET` | `/api/v1/dashboard/stats` | Metrik agregasi operasional untuk dashboard frontend |
 | **Swagger UI** | `GET` | `/swagger/index.html` | Dokumentasi interaktif OpenAPI 3.0 |
+
+---
+
+## 🔗 Ekosistem Repositori GeoTrack
+
+| Komponen | Repositori GitHub | Deskripsi & Stack |
+|---|---|---|
+| **Backend REST API** | [Backend-GeoTrack](https://github.com/NadhiefIlmi/Backend-GeoTrack) | REST API berkinerja tinggi (Golang, Chi Router, PostgreSQL, pgxpool) |
+| **Frontend Web App** | [Frontend-GeoTrack](https://github.com/NadhiefIlmi/Frontend-GeoTrack) | Antarmuka interaktif spasial (TanStack Start, React 19, Leaflet, Tailwind CSS) |
 
