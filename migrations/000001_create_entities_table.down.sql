@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS entities CASCADE;
+
