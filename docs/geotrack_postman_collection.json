@@ -1,0 +1,139 @@
+{
+  "info": {
+    "name": "GeoTrack API Collection",
+    "description": "Postman Collection for GeoTrack Geospatial Management REST API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Entities",
+      "item": [
+        {
+          "name": "List Entities",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/entities?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["entities"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Entity",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"VH-901\",\n  \"name\": \"Logistics Courier 901\",\n  \"type\": \"vehicle\",\n  \"status\": \"active\",\n  \"latitude\": -6.2100,\n  \"longitude\": 106.8400,\n  \"description\": \"Express parcel courier delivery vehicle\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/entities",
+              "host": ["{{baseUrl}}"],
+              "path": ["entities"]
+            }
+          }
+        },
+        {
+          "name": "Get Entity by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/entities/{{entityId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["entities", "{{entityId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Entity",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"VH-901\",\n  \"name\": \"Logistics Courier 901 Updated\",\n  \"type\": \"vehicle\",\n  \"status\": \"maintenance\",\n  \"latitude\": -6.2100,\n  \"longitude\": 106.8400\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/entities/{{entityId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["entities", "{{entityId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Entity",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/entities/{{entityId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["entities", "{{entityId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Activities",
+      "item": [
+        {
+          "name": "List Activities",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/activities?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["activities"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "stats"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/v1"
+    },
+    {
+      "key": "entityId",
+      "value": "c1f7a091-8849-4bc2-9e96-a94f30ad8151"
+    }
+  ]
+}
+

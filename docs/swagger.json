@@ -1,0 +1,264 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "GeoTrack API",
+    "description": "Enterprise Geospatial Entity Management System REST API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "GeoTrack Engineering Team",
+      "email": "dev@geotrack.local"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api/v1",
+      "description": "Local Development Server"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "description": "Verifies that the server and database are healthy and operational",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/entities": {
+      "get": {
+        "summary": "List entities",
+        "description": "Retrieves paginated list of entities with filtering and sorting",
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } },
+          { "name": "type", "in": "query", "schema": { "type": "string", "enum": ["vehicle", "iot_device", "facility", "infrastructure"] } },
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["active", "inactive", "maintenance"] } },
+          { "name": "sort_by", "in": "query", "schema": { "type": "string", "enum": ["created_at", "name", "code", "status"], "default": "created_at" } },
+          { "name": "order", "in": "query", "schema": { "type": "string", "enum": ["asc", "desc"], "default": "desc" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entities retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create entity",
+        "description": "Registers a new geospatial asset",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEntityRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Entity created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntitySingleResponse"
+                }
+              }
+            }
+          },
+          "409": { "description": "Duplicate code error" },
+          "422": { "description": "Validation error" }
+        }
+      }
+    },
+    "/entities/{id}": {
+      "get": {
+        "summary": "Get entity by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Entity retrieved" },
+          "404": { "description": "Entity not found" }
+        }
+      },
+      "put": {
+        "summary": "Update entity",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEntityRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Entity updated successfully" },
+          "404": { "description": "Entity not found" },
+          "409": { "description": "Duplicate code conflict" }
+        }
+      },
+      "delete": {
+        "summary": "Delete entity",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Entity deleted successfully" },
+          "404": { "description": "Entity not found" }
+        }
+      }
+    },
+    "/activities": {
+      "get": {
+        "summary": "List activity logs",
+        "description": "Chronological audit trail of all entity modifications",
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } },
+          { "name": "action", "in": "query", "schema": { "type": "string", "enum": ["created", "updated", "status_changed", "deleted"] } },
+          { "name": "entity_id", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Activity logs retrieved" }
+        }
+      }
+    },
+    "/activities/{id}": {
+      "get": {
+        "summary": "Get activity log by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Activity log details retrieved" },
+          "404": { "description": "Activity log not found" }
+        }
+      }
+    },
+    "/dashboard/stats": {
+      "get": {
+        "summary": "Get dashboard operational metrics",
+        "responses": {
+          "200": { "description": "Dashboard statistics retrieved" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string", "example": "Service is healthy and operational" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "status": { "type": "string", "example": "UP" },
+              "database": { "type": "string", "example": "UP" },
+              "version": { "type": "string", "example": "1.0.0" },
+              "environment": { "type": "string", "example": "development" },
+              "uptime_seconds": { "type": "integer", "example": 120 }
+            }
+          }
+        }
+      },
+      "CreateEntityRequest": {
+        "type": "object",
+        "required": ["code", "name", "type", "latitude", "longitude"],
+        "properties": {
+          "code": { "type": "string", "example": "VH-001" },
+          "name": { "type": "string", "example": "Fleet Alpha - Truck 01" },
+          "type": { "type": "string", "enum": ["vehicle", "iot_device", "facility", "infrastructure"], "example": "vehicle" },
+          "status": { "type": "string", "enum": ["active", "inactive", "maintenance"], "example": "active" },
+          "latitude": { "type": "number", "format": "double", "example": -6.2088 },
+          "longitude": { "type": "number", "format": "double", "example": 106.8456 },
+          "description": { "type": "string", "example": "West Jakarta sector delivery" }
+        }
+      },
+      "UpdateEntityRequest": {
+        "type": "object",
+        "required": ["code", "name", "type", "status", "latitude", "longitude"],
+        "properties": {
+          "code": { "type": "string", "example": "VH-001" },
+          "name": { "type": "string", "example": "Fleet Alpha - Truck 01" },
+          "type": { "type": "string", "enum": ["vehicle", "iot_device", "facility", "infrastructure"] },
+          "status": { "type": "string", "enum": ["active", "inactive", "maintenance"] },
+          "latitude": { "type": "number", "format": "double" },
+          "longitude": { "type": "number", "format": "double" },
+          "description": { "type": "string" }
+        }
+      },
+      "EntitySingleResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/Entity" }
+        }
+      },
+      "EntityListResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "message": { "type": "string" },
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Entity" }
+          },
+          "meta": { "$ref": "#/components/schemas/PaginationMeta" }
+        }
+      },
+      "Entity": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "code": { "type": "string" },
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "status": { "type": "string" },
+          "latitude": { "type": "number" },
+          "longitude": { "type": "number" },
+          "description": { "type": "string" },
+          "created_at": { "type": "string" },
+          "updated_at": { "type": "string" }
+        }
+      },
+      "PaginationMeta": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "integer" },
+          "limit": { "type": "integer" },
+          "total_records": { "type": "integer" },
+          "total_pages": { "type": "integer" }
+        }
+      }
+    }
+  }
+}
+
