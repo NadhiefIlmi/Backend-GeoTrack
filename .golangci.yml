@@ -1,0 +1,27 @@
+run:
+  timeout: 3m
+  tests: true
+
+linters:
+  enable:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - revive
+
+linters-settings:
+  govet:
+    enable-all: true
+  revive:
+    severity: warning
+    rules:
+      - name: exported
+        disabled: false
+
+issues:
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
